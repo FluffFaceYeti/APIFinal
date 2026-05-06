@@ -20,6 +20,10 @@ const pendingConsents = new Map();
 // 🚫 HELPERS
 // ===========================================
 
+const SINGLE_VALUE_TYPES = new Set([
+  "",
+]);
+
 function generateValue(seed, offset, max, min = 0, user = "") {
   const hash = crypto
     .createHash("md5")
@@ -27,6 +31,25 @@ function generateValue(seed, offset, max, min = 0, user = "") {
     .digest("hex");
   const num = parseInt(hash.slice(0, 8), 16);
   return (num % (max - min + 1)) + min;
+}
+
+function generateGlobalValue(seed, offset, max, min = 0) {
+  const today = new Date().toLocaleDateString("en-GB");
+
+  const hash = crypto
+    .createHash("md5")
+    .update(seed + offset + today)
+    .digest("hex");
+
+  const num = parseInt(hash.slice(0, 8), 16);
+  return (num % (max - min + 1)) + min;
+}
+
+function generateSmartValue(type, offset, max, min = 0, user = "") {
+  if (SINGLE_VALUE_TYPES.has(type)) {
+    return generateGlobalValue(type, offset, max, min);
+  }
+  return generateValue(type, offset, max, min, user);
 }
 
 function pickRandom(arr) {
@@ -48,23 +71,17 @@ function isJokeEnabled(req, type) {
   if (specific === "false") return false;
   if (specific === "true") return true;
 
-  // ❌ Jokes default OFF
   return false;
 }
-
-/**
- * Universal joke calculator
- * @param {object} req - request object
- * @param {string} type - joke type / command name
- * @param {number} value - numeric value to scale joke
- * @param {object} [cfg] - optional {min, max, levels} config for stats/interactions
- * @param {number} [index] - optional index for list-type commands
- */
 
 function getJoke(req, type, value, cfg = null, index = null) {
   if (!isJokeEnabled(req, type)) return "";
 
   if (typeof value !== "number" || value == null) {
+    return "";
+  }
+
+  if (type === "bb") {
     return "";
   }
 
@@ -89,7 +106,6 @@ function getJoke(req, type, value, cfg = null, index = null) {
     if (jokes[type] && jokes[type][level]) {
       const joke = pickRandom(jokes[type][level]);
       return " " + joke;
-    } else {
     }
   }
 
@@ -165,6 +181,7 @@ function runRandomGame(type, sender) {
 
   return message;
 }
+
 // ===========================================
 // 🎮 ROCK PAPER SCISSORS
 // ===========================================
@@ -291,12 +308,12 @@ function highOrLow(sender, target) {
 // ===========================================
 
 const miniGames = {
-rps: rockPaperScissors,
-tugofwar: tugOfWar,
-diceroll: diceRoll,
-coinflip: coinFlip,
-rpsls: rpsls,
-highorlow: highOrLow,
+  rps: rockPaperScissors,
+  tugofwar: tugOfWar,
+  diceroll: diceRoll,
+  coinflip: coinFlip,
+  rpsls: rpsls,
+  highorlow: highOrLow,
 };
 
 // ===========================================
@@ -4239,6 +4256,14 @@ app.get("/", (req, res) => {
     return res.send(specialUsers[sender][type]);
   }
 
+  // ===========================================
+// 🟢 KEEP-ALIVE PING
+// ===========================================
+
+if (type === "ping") {
+  return res.send("");
+}
+
   // ===================================================
   // ASPECTS OF THE DAY
   // ===================================================
@@ -4858,7 +4883,7 @@ app.get("/", (req, res) => {
     // ===========================================
 
     // ===========================================
-    // 📝 MESSAGE TEMPLATES FOR TRACKED LIST TYPES
+    // 📝 MESSAGE TEMPLATES
     // ===========================================
 
     const listMessageTemplates = {
@@ -5153,63 +5178,92 @@ app.get("/", (req, res) => {
         return res.send(message);
       }
 
-      // -------------------------------
-      // Generic numeric handler
-      // -------------------------------
+  // -------------------------------
+// Generic numeric handler
+// -------------------------------
 
-      value = generateValue(seed, type, cfg.max, cfg.min, target);
-      const space = spaceIf(cfg.unitSpace);
-      const unit = cfg.unit || "";
+if (SINGLE_VALUE_TYPES.has(type)) {
+  value = generateGlobalValue(type, 0, cfg.max, cfg.min);
+} else {
+  value = generateValue(seed, type, cfg.max, cfg.min, target);
+}
 
-      const triggerValue = aspectsOfTheDayTriggers[type];
-      const hasAspect = aspectsOfTheDay[type] !== undefined;
+const space = spaceIf(cfg.unitSpace);
+const unit = cfg.unit || "";
 
-      if (triggerValue !== undefined && hasAspect) {
-        const winnerAlready = Boolean(aspectsOfTheDay[type][today]);
+const triggerValue = aspectsOfTheDayTriggers[type];
+const hasAspect = aspectsOfTheDay[type] !== undefined;
 
-        if (!winnerAlready && value === triggerValue) {
-          aspectsOfTheDay[type][today] = { user: sender, value };
+if (triggerValue !== undefined && hasAspect) {
+  const winnerAlready = Boolean(aspectsOfTheDay[type][today]);
 
-          const winnerFn = aspectOfTheDayMessages[type];
-          message = winnerFn
-            ? winnerFn(senderDisplay, value, space, cfg)
-            : `${senderDisplay}, your ${cfg.label} is ${value}${space}${unit} today! 🎉 You are the ${cfg.label} of the Day!`;
+  // 🔥 SINGLE RETURN BLOCK (NEW)
+  if (SINGLE_VALUE_TYPES.has(type) && winnerAlready) {
+    value = triggerValue;
 
-          if (!doNotTrack.includes(type)) {
-            statCounters[sender] = statCounters[sender] || {};
-            statCounters[sender][type] = (statCounters[sender][type] || 0) + 1;
-            commandCounters[type] = (commandCounters[type] || 0) + 1;
-          }
+    const winnerFn = aspectOfTheDayMessages[type];
+    message = winnerFn
+      ? winnerFn(senderDisplay, value, space, cfg)
+      : `${senderDisplay}, your ${cfg.label} is ${value}${space}${unit} today!`;
 
-          return res.send(message);
-        }
+    if (!doNotTrack.includes(type)) {
+      statCounters[sender] = statCounters[sender] || {};
+      statCounters[sender][type] =
+        (statCounters[sender][type] || 0) + 1;
+      commandCounters[type] = (commandCounters[type] || 0) + 1;
+    }
 
-        if (winnerAlready && value === triggerValue) {
-          if (value < cfg.max) value++;
-          else if (value > cfg.min) value--;
-        }
-      }
+    return res.send(message);
+  }
 
-      let level = "low";
-      if (cfg.levels && Array.isArray(cfg.levels)) {
-        if (value >= cfg.levels[0] && value <= cfg.levels[1]) level = "medium";
-        if (value > cfg.levels[1]) level = "high";
-      }
+  // 🏆 FIRST WINNER (unchanged)
+  if (!winnerAlready && value === triggerValue) {
+    aspectsOfTheDay[type][today] = { user: sender, value };
 
-      const joke = getJoke(req, type, value, cfg);
-      const template =
-        messageTemplates[type] ||
-        messageTemplates[category] ||
-        messageTemplates.default;
-      message = template(senderDisplay, cfg, value, space, unit, joke);
+    const winnerFn = aspectOfTheDayMessages[type];
+    message = winnerFn
+      ? winnerFn(senderDisplay, value, space, cfg)
+      : `${senderDisplay}, your ${cfg.label} is ${value}${space}${unit} today! 🎉 You are the ${cfg.label} of the Day!`;
 
-      if (!doNotTrack.includes(type)) {
-        statCounters[sender] = statCounters[sender] || {};
-        statCounters[sender][type] = (statCounters[sender][type] || 0) + 1;
-        commandCounters[type] = (commandCounters[type] || 0) + 1;
-      }
+    if (!doNotTrack.includes(type)) {
+      statCounters[sender] = statCounters[sender] || {};
+      statCounters[sender][type] =
+        (statCounters[sender][type] || 0) + 1;
+      commandCounters[type] = (commandCounters[type] || 0) + 1;
+    }
 
-      return res.send(message);
+    return res.send(message);
+  }
+
+  // 🛑 ORIGINAL PROTECTION (leave untouched)
+  if (winnerAlready && value === triggerValue) {
+    if (value < cfg.max) value++;
+    else if (value > cfg.min) value--;
+  }
+}
+
+let level = "low";
+if (cfg.levels && Array.isArray(cfg.levels)) {
+  if (value >= cfg.levels[0] && value <= cfg.levels[1]) level = "medium";
+  if (value > cfg.levels[1]) level = "high";
+}
+
+const joke = getJoke(req, type, value, cfg);
+const template =
+  messageTemplates[type] ||
+  messageTemplates[category] ||
+  messageTemplates.default;
+
+message = template(senderDisplay, cfg, value, space, unit, joke);
+
+if (!doNotTrack.includes(type)) {
+  statCounters[sender] = statCounters[sender] || {};
+  statCounters[sender][type] =
+    (statCounters[sender][type] || 0) + 1;
+  commandCounters[type] = (commandCounters[type] || 0) + 1;
+}
+
+return res.send(message);
     }
 
     // --------------------------
@@ -5234,14 +5288,6 @@ app.get("/", (req, res) => {
       lock[type] = false;
     }
   }
-});
-
-// ===========================================
-// 🚫 URL PING
-// ===========================================
-
-app.get("/ping", (req, res) => {
-  res.send("");
 });
 
 // ===========================================
