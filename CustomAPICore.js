@@ -19,6 +19,7 @@ import hold from "./data/numeric-commands/hold.js";
 import personality from "./data/numeric-commands/personality.js";
 import seaofthieves from "./data/numeric-commands/seaofthieves.js";
 import skills from "./data/numeric-commands/skills.js";
+import customnumericcommands from "./data/numeric-commands/customnumericcommands.js";
 
 // List command configs
 import animal from "./data/list-commands/animals.js";
@@ -40,7 +41,8 @@ import spells from "./data/list-commands/spells.js";
 import wizardvibes from "./data/list-commands/wizard.js";
 import wizarditems from "./data/list-commands/wizarditems.js";
 import nnm from "./data/list-commands/nmmchallenges.js";
-import SINGLE_VALUE_TYPES from "./data/helpers/singlelistitems.js";
+import SINGLE_VALUE_TYPES from "./data/list-commands/singlelistitems.js";
+import { customItems } from "./data/list-commands/customlistcommands.js";
 
 //custom commands and other helper functions
 import doNotTrack from "./data/helpers/donottracklist.js";
