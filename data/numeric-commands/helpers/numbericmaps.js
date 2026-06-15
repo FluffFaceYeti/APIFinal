@@ -24,6 +24,5 @@ const numericGroups = [
       { map: hold, category: "hold" },
       { map: carry, category: "carry" },
       { map: piracy, category: "piracy" },
-      { map: sot_uk, category: "sot_uk" },
     ];
     export default numericGroups;
