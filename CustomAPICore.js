@@ -1439,7 +1439,7 @@ app.get("/", (req, res) => {
       if (!map[type]) continue;
 
       const cfg = map[type];
-      const jokesForGroup = jokes[jokesKey] || [];
+      const jokesForGroup = jokes[type] || jokes[jokesKey] || [];
 
       // ===========================================
       // RANDOM INDEX (tracked vs doNotTrack)
