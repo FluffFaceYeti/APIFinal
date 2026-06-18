@@ -1,11 +1,10 @@
 # How to Add a New Numeric Command
 
 ## Step 1 - Open `customnumericcommands.js`
-
+## Location data/numeric-commands
 Add a new command using this format:
 
 ```js
-const customnumericcommands = {
   shots: {
     min: 0,
     max: 10,
@@ -16,9 +15,6 @@ const customnumericcommands = {
     template: (sender, value, joke) =>
       `${sender}, You have hit ${value}/10 shots today! ${joke}`,
   },
-};
-
-export default customnumericcommands;
 ```
 
 ---
@@ -140,7 +136,7 @@ Controls exactly how the command appears in chat.
 Example result:
 
 ```text
-@FluffFaceYeti, You have hit 8/10 shots today!
+@username, You have hit 8/10 shots today!
 ```
 
 ---
@@ -198,26 +194,8 @@ This creates:
 
 ---
 
-## Step 4 - Register the Commands
-
-Open:
-
-```text
-data/numeric-commands/helpers/numericmaps.js
-```
-
-Add:
-
-```js
-{ map: customnumericcommands, category: "customnumericcommands" },
-```
-
-to the `numericGroups` array.
-
----
-
-## Step 5 - Add Jokes (Optional)
-
+## Step 4 - Add Jokes (Optional)
+## located in data/helpers
 In `jokes.js`:
 
 ```js
@@ -238,8 +216,8 @@ The system will automatically pick jokes based on the rolled value.
 
 ---
 
-## Step 6 - Add an "Of The Day" Winner (Optional)
-
+## Step 5 - Add an "Of The Day" Winner (Optional)
+## located in data/helpers
 Open:
 
 ```text
@@ -302,13 +280,13 @@ shots: {
 Normal Result:
 
 ```text
-@FluffFaceYeti, You have hit 8/10 shots today!
+@username, You have hit 8/10 shots today!
 ```
 
 Winner Result:
 
 ```text
-@FluffFaceYeti, You have hit 10/10 shots today! You are the shots of the Day!
+@username, You have hit 10/10 shots today! You are the shots of the Day!
 ```
 
-That's it. Add the command, register it in `numericmaps.js`, and it will automatically support templates, jokes, tracking, leaderboards, and "Of The Day" features.
+That's it. Add the command, and it will automatically support templates, jokes, tracking, leaderboards, and "Of The Day" features.
