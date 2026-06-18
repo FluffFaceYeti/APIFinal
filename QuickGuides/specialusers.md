@@ -8,8 +8,7 @@ Creates custom responses for specific users.
 const specialUsers = {
   fluffy: {
     beard: "@fluffy, your beard is majestic!"
-  }
-};
+  },
 ```
 
 ## Multiple Commands For One User
@@ -20,8 +19,7 @@ const specialUsers = {
     beard: "@fluffy, your beard is majestic!",
     hair: "@fluffy, your hair is fabulous!",
     daddy: "@fluffy is Maximum Daddy."
-  }
-};
+  },
 ```
 
 ## Multiple Users
@@ -36,6 +34,5 @@ const specialUsers = {
   },
   alice: {
     princess: "@alice is royalty today!"
-  }
-};
+  },
 ```
