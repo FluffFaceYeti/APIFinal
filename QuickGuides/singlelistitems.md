@@ -1,6 +1,6 @@
 # singlelistitems.js
 ## found in data/helpers
-Defines commands that should only return a single item.
+Defines commands that should only return a single reply for everyone.
 
 Example:
 
@@ -11,4 +11,4 @@ const SINGLE_VALUE_TYPES = new Set([
 ]);
 ```
 
-Most users will never need to edit this file.
+Most users will never need to edit this file unless they wish to have something such as the "drink of the day" or the "ale of the day"
