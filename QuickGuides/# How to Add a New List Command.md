@@ -118,7 +118,7 @@ This creates:
 ---
 
 ## Step 4 - Add Jokes (Optional)
-
+## located in data/helpers/jokes.js
 In `jokes.js`:
 
 ```js
