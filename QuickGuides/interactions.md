@@ -1,5 +1,5 @@
 # interactions.js
-
+## found in data/helpers
 Lists all interaction commands.
 ## found in data/helpers
 Example:
