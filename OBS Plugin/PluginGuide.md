@@ -28,8 +28,8 @@ Example:
 
 | Command | Username    | Result                                  |
 | ------- | ----------- | --------------------------------------- |
-| pickle  | BlueGoo26   | Only BlueGoo26 can trigger the source   |
-| cry     | epiickgiirl | Only epiickgiirl can trigger the source |
+| pickle  | username   | Only BlueGoo26 can trigger the source   |
+| cry     | username  | Only epiickgiirl can trigger the source |
 
 Example:
 
@@ -45,7 +45,7 @@ Only triggers if sent by the configured user.
 
 Trigger sources based on a bot response.
 
-Useful for counters, loyalty points, death counters, PP commands, shot counters, etc.
+Useful for all the available commands in the project and much more.
 
 Example Rule:
 
@@ -123,8 +123,8 @@ Example:
 
 | Username    | Source         |
 | ----------- | -------------- |
-| BlueGoo26   | Entrance Video |
-| epiickgiirl | Sparkles       |
+| username    | Entrance Video |
+| username  | Sparkles       |
 
 When that user sends a message in chat:
 
@@ -170,7 +170,7 @@ Shows the source immediately.
 
 | Command | Trigger | Username  |
 | ------- | ------- | --------- |
-| pickle  |         | BlueGoo26 |
+| pickle  |         | username  |
 
 Result:
 
@@ -178,7 +178,7 @@ Result:
 !pickle
 ```
 
-Only works for BlueGoo26.
+Only works for username.
 
 ---
 
@@ -241,7 +241,7 @@ Example:
 ```text
 waffles|||5000|Another Train
 pp|15||5000|Another Train
-pickle||BlueGoo26|5000|Pickle Video
+pickle||username|5000|Pickle Video
 ```
 
 Format:
