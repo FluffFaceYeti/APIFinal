@@ -117,25 +117,7 @@ This creates:
 
 ---
 
-## Step 4 - Register the Commands
-
-Open:
-
-```text
-data/list-commands/helpers/listmaps.js
-```
-
-Add:
-
-```js
-{ map: customItems, jokesKey: "customItems", category: "customItems" },
-```
-
-to the `listGroups` array.
-
----
-
-## Step 5 - Add Jokes (Optional)
+## Step 4 - Add Jokes (Optional)
 
 In `jokes.js`:
 
@@ -151,7 +133,7 @@ If you don't want jokes, leave the array empty.
 
 ---
 
-## Step 6 - Add an "Of The Day" Winner (Optional)
+## Step 5 - Add an "Of The Day" Winner (Optional)
 
 Open:
 
