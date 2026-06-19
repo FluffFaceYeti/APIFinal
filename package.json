@@ -1,12 +1,12 @@
 {
-  "name": "customapi-core",
+  "name": "FFY-Commands-OBSPlugin",
   "version": "1.0.0",
   "type": "module",
-  "main": "CustomAPICore.js",
+  "main": "FFY.js",
   "dependencies": {
     "express": "^4.18.2"
   },
   "scripts": {
-    "start": "node CustomAPICore.js"
+    "start": "node FFY.js"
   }
 }
