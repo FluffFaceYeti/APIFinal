@@ -47,7 +47,7 @@ const love = {
     unit: "%",
     unitSpace: false,
     template: (sender, value, joke) =>
-      `${sender}, Titch rates your face ${value}% today! ${joke}`,
+      `${sender}, yourchosenusername(replace this) rates your face ${value}% today! ${joke}`,
   },
 };
 export default love;
