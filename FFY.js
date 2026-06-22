@@ -136,6 +136,15 @@ function getJoke(req, type, value, cfg = null, index = null) {
     return "";
   }
 
+  if (
+    cfg &&
+    value === cfg.max &&
+    jokes[type] &&
+    jokes[type].perfect
+  ) {
+    return pickRandom(jokes[type].perfect);
+  }
+
   if (cfg && typeof value === "number") {
     const min = cfg.min ?? 0;
     const max = cfg.max ?? 100;
